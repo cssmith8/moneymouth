@@ -1,10 +1,10 @@
 //use csv::{Reader, StringRecord, Writer};
 use crate::types::types::{Context, Data, Error};
+use anyhow::Result;
 use pickledb::{PickleDb, PickleDbDumpPolicy, SerializationMethod};
 use poise::serenity_prelude as serenity;
 use serenity::model::id::ChannelId;
 use serenity::prelude::*;
-use anyhow::Result;
 use serenity::{
     //model::prelude::{Message, Ready},
     Client,
@@ -61,7 +61,7 @@ async fn rustical_message(
         match result {
             Ok(rec) => results.push(rec),
             Err(err) => {
-                println!("ERORR PARSING: {}", err.to_string())
+                println!("ERROR PARSING: {}", err.to_string())
             }
         }
     }
@@ -72,6 +72,7 @@ async fn rustical_message(
     };
 
     let l: String = match laptop.parse().unwrap() {
+        2 => " Dockically".to_string(),
         1 => " Laptopically".to_string(),
         _ => "".to_string(),
     };
@@ -150,7 +151,7 @@ async fn main() -> Result<(), anyhow::Error> {
     let token = env::var("DISCORD_TOKEN").expect("Expected discord token env");
 
     let db = PickleDb::load(
-        "data/real.db",
+        "/moneymouth/data/real.db",
         PickleDbDumpPolicy::AutoDump,
         SerializationMethod::Json,
     );
@@ -164,8 +165,6 @@ async fn main() -> Result<(), anyhow::Error> {
             commands: vec![
                 age(),
                 say(),
-                //commands::stars::matchup::matchup(),
-                //commands::modal::modal(),
                 commands::options::add::open::open(),
                 commands::options::add::close::close(),
                 commands::options::add::expire::expire(),
