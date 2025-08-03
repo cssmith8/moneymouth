@@ -1,15 +1,15 @@
-use poise::serenity_prelude::{self as serenity};
+use crate::types::position::Position;
 use crate::types::positionmonth::PositionMonth;
 use crate::types::tradingmonth::TradingMonth;
 use crate::types::types::{AppContext, Error};
-use crate::types::position::Position;
-use crate::utils::{label_display, open_option_db};
+use crate::utils::{get_options_db_path, label_display, open_option_db};
+use poise::serenity_prelude::{self as serenity};
 use std::collections::HashMap;
 
 #[poise::command(slash_command)]
 pub async fn month(ctx: AppContext<'_>) -> Result<(), Error> {
     let userid = ctx.interaction.user.id;
-    let db_location = format!("data/options/{}.db", userid.to_string());
+    let db_location = get_options_db_path(userid.to_string());
 
     let db = match open_option_db(db_location.clone()) {
         Some(db) => db,
@@ -53,7 +53,7 @@ pub async fn month(ctx: AppContext<'_>) -> Result<(), Error> {
                 year: profitmonth.year,
                 month: profitmonth.month,
                 gain: profitmonth.gain,
-                investment: profitmonth.investment
+                investment: profitmonth.investment,
             });
     }
 
@@ -74,16 +74,21 @@ pub async fn month(ctx: AppContext<'_>) -> Result<(), Error> {
                 year: profitmonth.year,
                 month: profitmonth.month,
                 gain: profitmonth.gain,
-                investment: profitmonth.investment
+                investment: profitmonth.investment,
             });
     }
 
     let mut responses: Vec<String> = Vec::new();
 
-    let mut chrono_returns: String = "**Daily Return Rate**\n-# Chronological Order\n\n".to_string();
+    let mut chrono_returns: String =
+        "**Daily Return Rate**\n-# Chronological Order\n\n".to_string();
     let mut chrono_gains: String = "**Distributed Gain**\n-# Chronological Order\n\n".to_string();
     let mut months_chrono: Vec<&TradingMonth> = trading_months.values().collect();
-    months_chrono.sort_by(|a, b| b.id().partial_cmp(&a.id()).unwrap_or(std::cmp::Ordering::Equal));
+    months_chrono.sort_by(|a, b| {
+        b.id()
+            .partial_cmp(&a.id())
+            .unwrap_or(std::cmp::Ordering::Equal)
+    });
     for tradingmonth in months_chrono {
         chrono_returns.push_str(&format!("{}\n", tradingmonth.display_daily_return_rate()));
         chrono_gains.push_str(&format!("{}\n", tradingmonth.display_distributed_gain()));
@@ -91,28 +96,44 @@ pub async fn month(ctx: AppContext<'_>) -> Result<(), Error> {
 
     let mut returns_returns = "**Daily Return Rate**\n-# by Daily Return Rate\n\n".to_string();
     let mut months_returns: Vec<&TradingMonth> = trading_months.values().collect();
-    months_returns.sort_by(|a, b| b.daily_return_rate().partial_cmp(&&a.daily_return_rate()).unwrap_or(std::cmp::Ordering::Equal));
+    months_returns.sort_by(|a, b| {
+        b.daily_return_rate()
+            .partial_cmp(&&a.daily_return_rate())
+            .unwrap_or(std::cmp::Ordering::Equal)
+    });
     for tradingmonth in months_returns {
         returns_returns.push_str(&format!("{}\n", tradingmonth.display_daily_return_rate()));
     }
 
     let mut gains_gains = "**Distributed Gain**\n-# by Distributed Gain\n\n".to_string();
     let mut months_gains: Vec<&TradingMonth> = trading_months.values().collect();
-    months_gains.sort_by(|a, b| b.gain.partial_cmp(&a.gain).unwrap_or(std::cmp::Ordering::Equal));
+    months_gains.sort_by(|a, b| {
+        b.gain
+            .partial_cmp(&a.gain)
+            .unwrap_or(std::cmp::Ordering::Equal)
+    });
     for tradingmonth in months_gains {
         gains_gains.push_str(&format!("{}\n", tradingmonth.display_distributed_gain()));
     }
 
     let mut taxgains_chrono: String = "**Taxable Gain**\n-# Chronological Order\n\n".to_string();
     let mut tax_months_chrono: Vec<&TradingMonth> = taxable_trading_months.values().collect();
-    tax_months_chrono.sort_by(|a, b| b.id().partial_cmp(&a.id()).unwrap_or(std::cmp::Ordering::Equal));
+    tax_months_chrono.sort_by(|a, b| {
+        b.id()
+            .partial_cmp(&a.id())
+            .unwrap_or(std::cmp::Ordering::Equal)
+    });
     for tradingmonth in tax_months_chrono {
         taxgains_chrono.push_str(&format!("{}\n", tradingmonth.display_distributed_gain()));
     }
 
     let mut taxgains_taxgains: String = "**Taxable Gain**\n-# by Taxable Gain\n\n".to_string();
     let mut tax_months_gains: Vec<&TradingMonth> = taxable_trading_months.values().collect();
-    tax_months_gains.sort_by(|a, b| b.gain.partial_cmp(&a.gain).unwrap_or(std::cmp::Ordering::Equal));
+    tax_months_gains.sort_by(|a, b| {
+        b.gain
+            .partial_cmp(&a.gain)
+            .unwrap_or(std::cmp::Ordering::Equal)
+    });
     for tradingmonth in tax_months_gains {
         taxgains_taxgains.push_str(&format!("{}\n", tradingmonth.display_distributed_gain()));
     }
@@ -123,15 +144,12 @@ pub async fn month(ctx: AppContext<'_>) -> Result<(), Error> {
     responses.push(gains_gains);
     responses.push(taxgains_chrono);
     responses.push(taxgains_taxgains);
-    
+
     view_strings(ctx, responses).await?;
     Ok(())
 }
 
-async fn view_strings(
-    ctx: AppContext<'_>,
-    pages: Vec<String>,
-) -> Result<(), serenity::Error> {
+async fn view_strings(ctx: AppContext<'_>, pages: Vec<String>) -> Result<(), serenity::Error> {
     // Define some unique identifiers for the navigation buttons
     let ctx_id = ctx.id();
     let prev_button_id = format!("{}prev", ctx_id);
@@ -147,14 +165,7 @@ async fn view_strings(
 
             poise::CreateReply::default()
                 .embed(serenity::CreateEmbed::default().description(
-                    label_display(
-                                0,
-                                pages.len() as u32,
-                                &format!(
-                                    "{}",
-                                    pages[0]
-                                ),
-                            ).await,
+                    label_display(0, pages.len() as u32, &format!("{}", pages[0])).await,
                 ))
                 .components(vec![components])
         };
@@ -198,10 +209,7 @@ async fn view_strings(
                             label_display(
                                 current_page as u32,
                                 pages.len() as u32,
-                                &format!(
-                                    "{}",
-                                    pages[current_page]
-                                ),
+                                &format!("{}", pages[current_page]),
                             )
                             .await,
                         ),

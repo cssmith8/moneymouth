@@ -1,12 +1,12 @@
-use crate::types::types::{AppContext, Error};
 use crate::types::position::Position;
-use crate::utils::open_option_db;
+use crate::types::types::{AppContext, Error};
+use crate::utils::{get_options_db_path, open_option_db};
 use chrono::Datelike;
 
 #[poise::command(slash_command)]
 pub async fn best(ctx: AppContext<'_>) -> Result<(), Error> {
     let userid = ctx.interaction.user.id;
-    let db_location = format!("data/options/{}.db", userid.to_string());
+    let db_location = get_options_db_path(userid.to_string());
 
     let db = match open_option_db(db_location.clone()) {
         Some(db) => db,
@@ -48,6 +48,7 @@ pub async fn best(ctx: AppContext<'_>) -> Result<(), Error> {
         )
     }).collect();
 
-    ctx.say(format!("Top 3 positions:\n{}", best_positions.join(""))).await?;
+    ctx.say(format!("Top 3 positions:\n{}", best_positions.join("")))
+        .await?;
     Ok(())
 }

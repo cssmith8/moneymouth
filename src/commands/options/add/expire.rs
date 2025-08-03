@@ -1,12 +1,12 @@
-use crate::types::types::{AppContext, Error};
 use crate::types::position::Position;
-use crate::utils::{open_option_db, position_list_replace};
+use crate::types::types::{AppContext, Error};
+use crate::utils::{get_options_db_path, open_option_db, position_list_replace};
 use anyhow::Result;
 
 #[poise::command(slash_command)]
 pub async fn expire(ctx: AppContext<'_>) -> Result<(), Error> {
     let userid = ctx.interaction.user.id;
-    let db_location = format!("data/options/{}.db", userid.to_string());
+    let db_location = get_options_db_path(userid.to_string());
 
     let mut db = match open_option_db(db_location.clone()) {
         Some(db) => db,
@@ -42,7 +42,8 @@ pub async fn expire(ctx: AppContext<'_>) -> Result<(), Error> {
     let gain = position.gain();
     position_list_replace(&mut db, "positions", edit_id as usize, position);
 
-    ctx.say(format!("Contract Expired :money_mouth: Made `${}`", gain)).await?;
+    ctx.say(format!("Contract Expired :money_mouth: Made `${}`", gain))
+        .await?;
 
     db.set("edit_id", &-1)?;
     Ok(())

@@ -1,9 +1,9 @@
-use crate::types::types::{AppContext, Error};
 use crate::types::position::Position;
-use crate::utils::{open_option_db, position_list_replace};
+use crate::types::types::{AppContext, Error};
+use crate::utils::{get_options_db_path, open_option_db, position_list_replace};
 use anyhow::Result;
 use poise::Modal;
-    
+
 #[derive(Debug, Modal)]
 #[name = "Split Contract"] // Struct name by default
 pub struct SplitModal {
@@ -16,7 +16,7 @@ pub struct SplitModal {
 #[poise::command(slash_command)]
 pub async fn split(ctx: AppContext<'_>) -> Result<(), Error> {
     let userid = ctx.interaction.user.id;
-    let db_location = format!("data/options/{}.db", userid.to_string());
+    let db_location = get_options_db_path(userid.to_string());
 
     let mut db = match open_option_db(db_location.clone()) {
         Some(db) => db,
@@ -61,7 +61,8 @@ pub async fn split(ctx: AppContext<'_>) -> Result<(), Error> {
 
     //make sure the provided quantity is between 0 and the original quantity, exclusive
     if split_quantity == 0 || split_quantity >= original_quantity {
-        ctx.say("Split quantity must be greater than 0 and less than the original quantity").await?;
+        ctx.say("Split quantity must be greater than 0 and less than the original quantity")
+            .await?;
         return Ok(());
     }
 
@@ -85,8 +86,12 @@ pub async fn split(ctx: AppContext<'_>) -> Result<(), Error> {
     db.ladd("positions", &duplicate_position)
         .ok_or_else(|| Error::from("Failed to add split position to database"))?;
 
-    ctx.say(&format!("Position split successfully. Original quantity: {}, Split quantity: {}", 
-                     original_quantity - split_quantity, split_quantity)).await?;
+    ctx.say(&format!(
+        "Position split successfully. Original quantity: {}, Split quantity: {}",
+        original_quantity - split_quantity,
+        split_quantity
+    ))
+    .await?;
 
     Ok(())
 }

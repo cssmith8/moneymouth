@@ -1,10 +1,10 @@
-use crate::types::types::{AppContext, Error};
 use crate::types::position::Position;
-use crate::utils::{open_option_db, position_list_replace};
+use crate::types::types::{AppContext, Error};
+use crate::utils::{get_options_db_path, open_option_db, position_list_replace};
 use chrono::prelude::*;
 //use poise::serenity_prelude::CreateQuickModal;
-use poise::Modal;
 use anyhow::Result;
+use poise::Modal;
 
 #[derive(Debug, Modal)]
 #[name = "Edit Position"] // Struct name by default
@@ -27,7 +27,7 @@ struct DateModal {
 #[poise::command(slash_command)]
 pub async fn date(ctx: AppContext<'_>) -> Result<(), Error> {
     let userid = ctx.interaction.user.id;
-    let db_location = format!("data/options/{}.db", userid.to_string());
+    let db_location = get_options_db_path(userid.to_string());
 
     let mut db = match open_option_db(db_location.clone()) {
         Some(db) => db,
@@ -77,12 +77,12 @@ pub async fn date(ctx: AppContext<'_>) -> Result<(), Error> {
         cur_year = year.parse::<i32>()?;
         updated_fields = true;
     }
-    
+
     if let Some(month) = data.month {
         cur_month = month.parse::<u32>()?;
         updated_fields = true;
     }
-    
+
     if let Some(day) = data.day {
         cur_day = day.parse::<u32>()?;
         updated_fields = true;
@@ -90,19 +90,13 @@ pub async fn date(ctx: AppContext<'_>) -> Result<(), Error> {
 
     // Apply all changes at once if any fields were updated
     if updated_fields {
-        position.contracts[last_idx].open.date = match Utc.with_ymd_and_hms(
-            cur_year,
-            cur_month,
-            cur_day,
-            17,
-            0,
-            0,
-        ) {
-            chrono::LocalResult::Single(datetime) => datetime,
-            _ => return Err(Error::from("Invalid date provided")),
-        };
+        position.contracts[last_idx].open.date =
+            match Utc.with_ymd_and_hms(cur_year, cur_month, cur_day, 17, 0, 0) {
+                chrono::LocalResult::Single(datetime) => datetime,
+                _ => return Err(Error::from("Invalid date provided")),
+            };
     }
-    
+
     position_list_replace(&mut db, "positions", edit_id as usize, position);
 
     ctx.say("Position Updated").await?;

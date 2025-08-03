@@ -1,12 +1,12 @@
-use poise::serenity_prelude::{self as serenity, Colour};
-use crate::types::types::{AppContext, Error};
 use crate::types::position::Position;
-use crate::utils::open_option_db;
+use crate::types::types::{AppContext, Error};
+use crate::utils::{get_options_db_path, open_option_db};
+use poise::serenity_prelude::{self as serenity, Colour};
 
 #[poise::command(slash_command)]
 pub async fn stats(ctx: AppContext<'_>) -> Result<(), Error> {
     let userid = ctx.interaction.user.id;
-    let db_location = format!("data/options/{}.db", userid.to_string());
+    let db_location = get_options_db_path(userid.to_string());
 
     let db = match open_option_db(db_location.clone()) {
         Some(db) => db,
@@ -33,7 +33,10 @@ pub async fn stats(ctx: AppContext<'_>) -> Result<(), Error> {
 
     let reply = poise::CreateReply::default().embed(
         serenity::CreateEmbed::default()
-            .description(format!("Total gain: `${}`\nCurrent unrealized gain: `${}`", gain, unrealized_gain))
+            .description(format!(
+                "Total gain: `${}`\nCurrent unrealized gain: `${}`",
+                gain, unrealized_gain
+            ))
             .color(Colour::DARK_GREEN),
     );
     ctx.send(reply).await?;

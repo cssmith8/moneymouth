@@ -1,13 +1,13 @@
-use crate::types::types::{AppContext, Error};
 use crate::types::position::Position;
+use crate::types::types::{AppContext, Error};
+use crate::utils::{get_options_db_path, open_option_db};
 use poise::serenity_prelude::{self as serenity, Colour};
-use crate::utils::open_option_db;
 use std::collections::HashMap;
 
 #[poise::command(slash_command)]
 pub async fn assets(ctx: AppContext<'_>) -> Result<(), Error> {
     let userid = ctx.interaction.user.id;
-    let db_location = format!("data/options/{}.db", userid.to_string());
+    let db_location = get_options_db_path(userid.to_string());
 
     let db = match open_option_db(db_location.clone()) {
         Some(db) => db,
@@ -29,7 +29,9 @@ pub async fn assets(ctx: AppContext<'_>) -> Result<(), Error> {
 
         // Determine the multiplier based on position type
         let qty = 100 * pos.get_final_contract().quantity() as i32;
-        let entry = ticker_quantities.entry(pos.get_ticker().clone()).or_insert(0);
+        let entry = ticker_quantities
+            .entry(pos.get_ticker().clone())
+            .or_insert(0);
 
         match pos.option_type().as_str() {
             "put" => *entry += qty,

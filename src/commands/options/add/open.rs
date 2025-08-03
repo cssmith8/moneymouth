@@ -1,8 +1,8 @@
 use crate::types::types::{AppContext, Error};
 use crate::types::{contract::Contract, option::OptionOpen, position::Position};
-use crate::utils::{open_option_db};
-use chrono::prelude::*;
+use crate::utils::{get_options_db_path, open_option_db};
 use anyhow::Result;
+use chrono::prelude::*;
 use poise::Modal;
 
 #[derive(Debug, Modal)]
@@ -63,7 +63,7 @@ pub async fn open(
 
             let status = "open".to_string();
             //add the open contract to the database
-            let db_location = format!("data/options/{}.db", userid.to_string());
+            let db_location = get_options_db_path(userid.to_string());
             let mut db = match open_option_db(db_location.clone()) {
                 Some(db) => db,
                 None => {

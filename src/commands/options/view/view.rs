@@ -1,6 +1,6 @@
-use crate::types::types::{AppContext, Error};
 use crate::types::position::Position;
-use crate::utils::{label_display, open_option_db};
+use crate::types::types::{AppContext, Error};
+use crate::utils::{get_options_db_path, label_display, open_option_db};
 use poise::serenity_prelude::{self as serenity, Colour};
 
 const SELECT_TEXT: &str = "**Position Selected**\n> Use `/close` to close the position\n> Use `/roll` to roll the position\n> Use `/expire` if the option expired\n> Use `/assign` if the option was assigned\n\n> Use `/edit` to edit position info\n> Use `/date` to change open date\n> Use `/split` to split the position\n\n> Use `/details` to view contract details";
@@ -13,7 +13,7 @@ pub struct OpenPosition {
 #[poise::command(slash_command)]
 pub async fn view(ctx: AppContext<'_>) -> Result<(), Error> {
     let userid = ctx.interaction.user.id;
-    let db_location = format!("data/options/{}.db", userid.to_string());
+    let db_location = get_options_db_path(userid.to_string());
 
     //immutable db
     let db = match open_option_db(db_location.clone()) {
@@ -50,10 +50,7 @@ pub async fn view(ctx: AppContext<'_>) -> Result<(), Error> {
     Ok(())
 }
 
-async fn view_open(
-    ctx: AppContext<'_>,
-    pages: Vec<OpenPosition>,
-) -> Result<(), serenity::Error> {
+async fn view_open(ctx: AppContext<'_>, pages: Vec<OpenPosition>) -> Result<(), serenity::Error> {
     // Define some unique identifiers for the navigation buttons
     let ctx_id = ctx.id();
     let prev_button_id = format!("{}prev", ctx_id);

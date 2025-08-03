@@ -1,5 +1,6 @@
 use crate::types::position::Position;
 use pickledb::{PickleDb, PickleDbDumpPolicy, SerializationMethod};
+use std::env;
 
 pub fn open_option_db(path: String) -> Option<PickleDb> {
     let mut new_flag = false;
@@ -45,4 +46,9 @@ pub fn position_list_replace(db: &mut PickleDb, name: &str, index: usize, positi
 
 pub async fn label_display(index: u32, length: u32, string: &String) -> String {
     return format!("-# {}/{}\n{}", index + 1, length, string);
+}
+
+pub fn get_options_db_path(userid: String) -> String {
+    let path = env::var("DB_PATH").expect("0");
+    format!("{}/options{}.db", path, userid)
 }
