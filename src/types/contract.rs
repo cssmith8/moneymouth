@@ -1,6 +1,8 @@
-use chrono::prelude::*;
-use crate::types::option::OptionOpen;
+use crate::types::excelline::Excelline;
 use crate::types::option::OptionClose;
+use crate::types::option::OptionOpen;
+use crate::types::simpledate::Simpledate;
+use chrono::prelude::*;
 
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct Contract {
@@ -9,7 +11,6 @@ pub struct Contract {
 }
 
 impl Contract {
-
     pub fn clone(&self) -> Contract {
         Contract {
             open: OptionOpen {
@@ -59,6 +60,46 @@ impl Contract {
 
     pub fn status(&self) -> String {
         self.open.status.clone()
+    }
+
+    pub fn open_to_excelline(&self) -> Excelline {
+        Excelline {
+            date: Simpledate::new(
+                self.open.date.year(),
+                self.open.date.month(),
+                self.open.date.day(),
+            ),
+            ticker: self.open.ticker.clone(),
+            stock_price: None, // Assuming stock price is not available here
+            contract_type: self.open.open_type.clone(),
+            strike: self.open.strike,
+            expiry_date: Simpledate::new(
+                self.open.expiry.year(),
+                self.open.expiry.month(),
+                self.open.expiry.day(),
+            ),
+            status: self.open.status.clone(),
+            quantity: self.open.quantity,
+            premium: self.open.premium,
+        }
+    }
+
+    pub fn close_to_excelline(&self) -> Option<Excelline> {
+        self.close.as_ref().map(|close| Excelline {
+            date: Simpledate::new(close.date.year(), close.date.month(), close.date.day()),
+            ticker: self.open.ticker.clone(),
+            stock_price: None, // Assuming stock price is not available here
+            contract_type: self.open.open_type.clone(),
+            strike: self.open.strike,
+            expiry_date: Simpledate::new(
+                self.open.expiry.year(),
+                self.open.expiry.month(),
+                self.open.expiry.day(),
+            ),
+            status: close.close_type.clone(),
+            quantity: self.open.quantity,
+            premium: 0.0 - close.premium,
+        })
     }
 
     pub async fn display(&self) -> String {

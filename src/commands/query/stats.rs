@@ -29,7 +29,13 @@ pub async fn stats(ctx: AppContext<'_>) -> Result<(), Error> {
     }
 
     let gain: f64 = closed_positions.iter().map(|pos| pos.gain()).sum();
+    let gain = if gain == -0.0 { 0.0 } else { gain };
     let unrealized_gain: f64 = open_positions.iter().map(|pos| pos.gain()).sum();
+    let unrealized_gain = if unrealized_gain == -0.0 {
+        0.0
+    } else {
+        unrealized_gain
+    };
 
     let reply = poise::CreateReply::default().embed(
         serenity::CreateEmbed::default()

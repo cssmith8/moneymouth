@@ -15,7 +15,15 @@ mod commands;
 mod types;
 mod utils;
 
-#[poise::command(slash_command, prefix_command)]
+fn says_it() -> String {
+    String::from(
+        "\
+Example usage:
+~my_huge_ass_command 127.0.0.1 @kangalio `i = i + 1` my_flag rest of the message",
+    )
+}
+
+#[poise::command(slash_command, prefix_command, help_text_fn = "says_it")]
 async fn say(
     ctx: Context<'_>,
     #[description = "Message to say"] message: String,
@@ -110,6 +118,7 @@ async fn main() -> Result<(), anyhow::Error> {
                 commands::view::all::all(),
                 commands::view::details::details(),
                 commands::view::assets::assets(),
+                commands::view::export::export(),
                 commands::query::stats::stats(),
                 commands::query::best::best(),
                 commands::query::month::month(),

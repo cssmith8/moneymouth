@@ -27,7 +27,7 @@ pub async fn all(ctx: AppContext<'_>) -> Result<(), Error> {
 
     //if no open options, return
     if all_positions.len() == 0 {
-        ctx.say("You have no open positions").await?;
+        ctx.say("You have no positions").await?;
         return Ok(());
     }
 
