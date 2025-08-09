@@ -1,5 +1,5 @@
 //use csv::{Reader, StringRecord, Writer};
-use crate::types::types::{Context, Data, Error};
+use crate::types::types::{Data, Error};
 use anyhow::Result;
 use poise::serenity_prelude as serenity;
 use serenity::prelude::*;
@@ -11,15 +11,6 @@ mod commands;
 mod events;
 mod types;
 mod utils;
-
-#[poise::command(slash_command, prefix_command)]
-async fn say(
-    ctx: Context<'_>,
-    #[description = "Message to say"] message: String,
-) -> Result<(), Error> {
-    ctx.say(message).await?;
-    Ok(())
-}
 
 async fn event_handler(
     ctx: &serenity::Context,
@@ -52,7 +43,6 @@ async fn main() -> Result<(), anyhow::Error> {
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
             commands: vec![
-                say(),
                 commands::add::open::open(),
                 commands::add::close::close(),
                 commands::add::expire::expire(),
