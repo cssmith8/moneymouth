@@ -1,6 +1,6 @@
 use crate::types::types::{AppContext, Error};
 use crate::types::{option::OptionClose, position::Position};
-use crate::utils::{get_options_db_path, open_option_db, position_list_replace};
+use crate::utils::db::{get_options_db_path, open_options_db, position_list_replace};
 use anyhow::Result;
 use chrono::prelude::*;
 use poise::Modal;
@@ -21,7 +21,7 @@ pub async fn close(ctx: AppContext<'_>) -> Result<(), Error> {
     let userid = ctx.interaction.user.id;
     let db_location = get_options_db_path(userid.to_string());
 
-    let mut db = match open_option_db(db_location.clone()) {
+    let mut db = match open_options_db(db_location.clone()) {
         Some(db) => db,
         None => {
             return Err(Error::from("Could not load db"));

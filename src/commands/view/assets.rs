@@ -1,6 +1,6 @@
 use crate::types::position::Position;
 use crate::types::types::{AppContext, Error};
-use crate::utils::{get_options_db_path, open_option_db};
+use crate::utils::db::{get_options_db_path, open_options_db};
 use poise::serenity_prelude::{self as serenity, Colour};
 use std::collections::HashMap;
 
@@ -9,7 +9,7 @@ pub async fn assets(ctx: AppContext<'_>) -> Result<(), Error> {
     let userid = ctx.interaction.user.id;
     let db_location = get_options_db_path(userid.to_string());
 
-    let db = match open_option_db(db_location.clone()) {
+    let db = match open_options_db(db_location.clone()) {
         Some(db) => db,
         None => {
             return Err(Error::from("Could not load db"));
