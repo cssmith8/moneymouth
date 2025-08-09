@@ -1,6 +1,7 @@
-use crate::types::position::Position;
 use crate::types::types::{AppContext, Error};
-use crate::utils::db::{get_options_db_path, open_options_db, position_list_replace};
+use crate::utils::db::{
+    get_options_db_path, get_selected_position, open_options_db, position_list_replace,
+};
 use anyhow::Result;
 
 #[poise::command(slash_command)]
@@ -14,34 +15,27 @@ pub async fn assign(ctx: AppContext<'_>) -> Result<(), Error> {
             return Err(Error::from("Could not load db"));
         }
     };
-    let edit_id: i32 = match db.get("edit_id") {
-        Some(id) => id,
-        None => {
-            ctx.say("Failed to retrieve edit_id").await?;
+
+    let indexed_position = match get_selected_position(userid.to_string()) {
+        Ok(pos) => pos,
+        Err(err) => {
+            ctx.say("An error has occurred").await?;
+            println!("Error: {}", err);
             return Ok(());
         }
     };
-    if edit_id == -1 {
-        ctx.say("No open position selected").await?;
-        return Ok(());
-    }
-    if edit_id >= db.llen("positions") as i32 {
-        ctx.say("Invalid selection").await?;
-        return Ok(());
-    }
-    //get the position at index edit_id
-    let mut position: Position = match db.lget("positions", edit_id as usize) {
-        Some(pos) => pos,
-        None => {
-            ctx.say("Failed to retrieve position").await?;
-            return Ok(());
-        }
-    };
+    let mut position = indexed_position.position;
+
     let last_index = position.contracts.len() - 1;
     position.contracts[last_index].open.status = "assigned".to_string();
     let q = position.contracts[last_index].open.quantity;
     let ticker = position.contracts[last_index].open.ticker.clone();
-    position_list_replace(&mut db, "positions", edit_id as usize, position);
+    position_list_replace(
+        &mut db,
+        "positions",
+        indexed_position.index as usize,
+        position,
+    );
 
     ctx.say(format!("Assigned {} shares of {}", q * 100, ticker))
         .await?;

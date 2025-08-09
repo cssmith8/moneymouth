@@ -1,5 +1,6 @@
 pub mod contract;
 pub mod excelline;
+pub mod indexedposition;
 pub mod option;
 pub mod position;
 pub mod positionmonth;
