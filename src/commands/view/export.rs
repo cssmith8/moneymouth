@@ -1,3 +1,5 @@
+use poise::serenity_prelude::CreateAttachment;
+
 use crate::types::excelline::Excelline;
 use crate::types::position::Position;
 use crate::types::types::{AppContext, Error};
@@ -47,6 +49,8 @@ pub async fn export(ctx: AppContext<'_>) -> Result<(), Error> {
         output.push('\n');
     }
 
-    ctx.say(format!("```\n{}```", output)).await?;
+    let reply = poise::CreateReply::default()
+        .attachment(CreateAttachment::bytes(output.as_bytes(), "export.csv"));
+    ctx.send(reply).await?;
     Ok(())
 }

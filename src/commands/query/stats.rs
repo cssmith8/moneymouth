@@ -1,7 +1,7 @@
 use crate::types::position::Position;
 use crate::types::types::{AppContext, Error};
 use crate::utils::{get_options_db_path, open_option_db};
-use poise::serenity_prelude::{self as serenity, Colour};
+use poise::serenity_prelude::{self as serenity, Colour, Timestamp};
 
 #[poise::command(slash_command)]
 pub async fn stats(ctx: AppContext<'_>) -> Result<(), Error> {
@@ -43,7 +43,8 @@ pub async fn stats(ctx: AppContext<'_>) -> Result<(), Error> {
                 "Total gain: `${}`\nCurrent unrealized gain: `${}`",
                 gain, unrealized_gain
             ))
-            .color(Colour::DARK_GREEN),
+            .color(Colour::DARK_GREEN)
+            .timestamp(Timestamp::now()),
     );
     ctx.send(reply).await?;
     Ok(())
