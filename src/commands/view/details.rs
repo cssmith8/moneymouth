@@ -13,7 +13,7 @@ pub async fn details(ctx: AppContext<'_>) -> Result<(), Error> {
             return Err(Error::from("Could not load db"));
         }
     };
-    let edit_id: i32 = db.get("edit_id").unwrap();
+    let edit_id: i32 = db.get("edit_id").unwrap_or(-1);
     if edit_id == -1 {
         ctx.say("No open position selected").await?;
         return Ok(());

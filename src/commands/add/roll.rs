@@ -1,8 +1,8 @@
 use crate::types::types::{AppContext, Error};
-use crate::types::{
-    contract::Contract, option::OptionClose, option::OptionOpen, position::Position,
+use crate::types::{contract::Contract, option::OptionClose, option::OptionOpen};
+use crate::utils::db::{
+    get_options_db_path, get_selected_position, open_options_db, position_list_replace,
 };
-use crate::utils::db::{get_options_db_path, open_options_db, position_list_replace};
 use anyhow::Result;
 use chrono::prelude::*;
 use poise::Modal;
@@ -35,28 +35,15 @@ pub async fn roll(ctx: AppContext<'_>) -> Result<(), Error> {
             return Err(Error::from("Could not load db"));
         }
     };
-    let edit_id: i32 = match db.get("edit_id") {
-        Some(id) => id,
-        None => {
-            ctx.say("Failed to retrieve edit_id").await?;
+    let indexed_position = match get_selected_position(&db) {
+        Ok(pos) => pos,
+        Err(err) => {
+            ctx.say("An error has occurred").await?;
+            println!("Error: {}", err);
             return Ok(());
         }
     };
-    if edit_id == -1 {
-        ctx.say("No open position selected").await?;
-        return Ok(());
-    }
-    if edit_id >= db.llen("positions") as i32 {
-        ctx.say("Invalid selection").await?;
-        return Ok(());
-    }
-    let mut position: Position = match db.lget("positions", edit_id as usize) {
-        Some(pos) => pos,
-        None => {
-            ctx.say("Failed to retrieve position").await?;
-            return Ok(());
-        }
-    };
+    let mut position = indexed_position.position;
 
     let data = match RollModal::execute(ctx).await? {
         Some(data) => data,
@@ -103,7 +90,12 @@ pub async fn roll(ctx: AppContext<'_>) -> Result<(), Error> {
         },
         close: None,
     });
-    position_list_replace(&mut db, "positions", edit_id as usize, position);
+    position_list_replace(
+        &mut db,
+        "positions",
+        indexed_position.index as usize,
+        position,
+    );
     ctx.say("Contract Rolled").await?;
     Ok(())
 }

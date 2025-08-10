@@ -69,15 +69,7 @@ pub fn get_options_db_path(userid: String) -> String {
     format!("{}/options{}.db", path, userid)
 }
 
-pub fn get_selected_position(userid: String) -> Result<IndexedPosition, String> {
-    let db_location = get_options_db_path(userid.to_string());
-
-    let db = match open_options_db(db_location.clone()) {
-        Some(db) => db,
-        None => {
-            return Err("Could not load db".to_string());
-        }
-    };
+pub fn get_selected_position(db: &PickleDb) -> Result<IndexedPosition, String> {
     let edit_id: i32 = match db.get("edit_id") {
         Some(id) => id,
         None => {

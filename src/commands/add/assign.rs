@@ -16,7 +16,7 @@ pub async fn assign(ctx: AppContext<'_>) -> Result<(), Error> {
         }
     };
 
-    let indexed_position = match get_selected_position(userid.to_string()) {
+    let indexed_position = match get_selected_position(&db) {
         Ok(pos) => pos,
         Err(err) => {
             ctx.say("An error has occurred").await?;
@@ -30,6 +30,7 @@ pub async fn assign(ctx: AppContext<'_>) -> Result<(), Error> {
     position.contracts[last_index].open.status = "assigned".to_string();
     let q = position.contracts[last_index].open.quantity;
     let ticker = position.contracts[last_index].open.ticker.clone();
+
     position_list_replace(
         &mut db,
         "positions",
