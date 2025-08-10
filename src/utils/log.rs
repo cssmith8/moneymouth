@@ -42,6 +42,7 @@ fn send_realtime_log(message: &str) {
     if let Some(http) = HTTP_CLIENT.get() {
         let channel = ChannelId::new(1160065321013620857);
         let message = message.to_string();
+        let http = http.clone();
         tokio::spawn(async move {
             let _ = channel.say(&http, &message).await;
         });
