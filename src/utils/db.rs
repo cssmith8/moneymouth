@@ -1,5 +1,5 @@
-use crate::types::indexedposition::IndexedPosition;
 use crate::types::position::Position;
+use crate::{types::indexedposition::IndexedPosition, utils::log::log};
 use pickledb::{PickleDb, PickleDbDumpPolicy, SerializationMethod};
 use std::env;
 
@@ -11,7 +11,7 @@ pub fn create_or_open_db(path: String) -> PickleDb {
     ) {
         Ok(opendb) => opendb,
         Err(_e) => {
-            println!("Creating new db at: {}", path);
+            let _ = log(format!("Creating new db at: {}", path));
             PickleDb::new(
                 path.clone(),
                 PickleDbDumpPolicy::AutoDump,
@@ -31,7 +31,7 @@ pub fn open_options_db(path: String) -> Option<PickleDb> {
     ) {
         Ok(opendb) => opendb,
         Err(_e) => {
-            println!("Creating new db at: {}", path);
+            let _ = log(format!("Creating new db at: {}", path));
             new_flag = true;
             PickleDb::new(
                 path.clone(),

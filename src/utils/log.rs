@@ -2,6 +2,8 @@ use crate::types::output::dblog::DBLog;
 use crate::types::types::Error;
 use crate::utils::db::create_or_open_db;
 use chrono::Utc;
+use poise::serenity_prelude as serenity;
+use serenity::model::id::ChannelId;
 use std::env;
 
 #[allow(dead_code)]
@@ -17,11 +19,20 @@ pub fn log(message: String) -> Result<(), Error> {
         "logs",
         &DBLog {
             timestamp: Utc::now(),
-            message,
+            message: message.clone(),
         },
     )
     .ok_or_else(|| Error::from("Failed to add log to database"))?;
+    if db.get::<bool>("realtime").unwrap_or(false) {
+        send_realtime_log(&message);
+    }
+    println!("[Logged]: {}", message);
     Ok(())
+}
+
+fn send_realtime_log(message: &str) {
+    let channel = ChannelId::new(1160065321013620857);
+    //let _ = channel.say(&message);
 }
 
 pub fn load_all_logs() -> Result<Vec<DBLog>, Error> {

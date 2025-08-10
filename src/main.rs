@@ -1,5 +1,6 @@
 //use csv::{Reader, StringRecord, Writer};
 use crate::types::types::{Data, Error};
+use crate::utils::log::log;
 use anyhow::Result;
 use poise::serenity_prelude as serenity;
 use serenity::prelude::*;
@@ -81,7 +82,7 @@ async fn main() -> Result<(), anyhow::Error> {
         .expect("Could not create client");
 
     if let Err(e) = client.start().await.map_err(anyhow::Error::from) {
-        println!("Client error: {}", e.to_string());
+        let _ = log(format!("Client error: {}", e.to_string()));
         return Err(e);
     }
     Ok(())

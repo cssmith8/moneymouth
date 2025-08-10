@@ -2,16 +2,16 @@ use crate::types::types::{AppContext, Error};
 use crate::utils::db::{
     get_options_db_path, get_selected_position, open_options_db, position_list_replace,
 };
-use chrono::prelude::*;
-//use poise::serenity_prelude::CreateQuickModal;
+use crate::utils::log::log;
 use anyhow::Result;
+use chrono::prelude::*;
 use poise::Modal;
 
 #[derive(Debug, Modal)]
 #[name = "Edit Position"] // Struct name by default
 struct DateModal {
     #[name = "Year"] // Field name by default
-    #[placeholder = "2024"] // No placeholder by default
+    #[placeholder = "2025"] // No placeholder by default
     #[max_length = 4]
     //#[paragraph] // Switches from single-line input to multiline text box
     year: Option<String>,
@@ -40,7 +40,7 @@ pub async fn date(ctx: AppContext<'_>) -> Result<(), Error> {
         Ok(pos) => pos,
         Err(err) => {
             ctx.say("An error has occurred").await?;
-            println!("Error: {}", err);
+            let _ = log(format!("Error: {}", err));
             return Ok(());
         }
     };

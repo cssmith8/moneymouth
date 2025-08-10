@@ -1,5 +1,5 @@
-use crate::types::contract::Contract;
 use crate::types::positionmonth::PositionMonth;
+use crate::{types::contract::Contract, utils::log::log};
 use chrono::{prelude::*, Datelike, Duration, NaiveDate};
 
 #[derive(serde::Serialize, serde::Deserialize)]
@@ -89,7 +89,7 @@ impl Position {
 
     pub fn investment(&self) -> f64 {
         if self.contracts.len() == 0 {
-            print!("Error: Empty position");
+            let _ = log("Error: Empty position".to_string());
             return 0.0;
         }
         self.get_final_contract().strike() * self.get_final_contract().quantity() as f64 * 100.0

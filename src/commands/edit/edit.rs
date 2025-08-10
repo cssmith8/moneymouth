@@ -1,7 +1,9 @@
 use crate::types::types::{AppContext, Error};
+use crate::utils::date::date_from_string;
 use crate::utils::db::{
     get_options_db_path, get_selected_position, open_options_db, position_list_replace,
 };
+use crate::utils::log::log;
 use chrono::prelude::*;
 //use poise::serenity_prelude::CreateQuickModal;
 use anyhow::Result;
@@ -20,7 +22,7 @@ struct EditModal {
     #[placeholder = "10.00"]
     strike: Option<String>,
     #[name = "Expiration Date"]
-    #[placeholder = "2024-12-30"]
+    #[placeholder = "12/30/2025"]
     #[max_length = 10]
     exp: Option<String>,
     #[name = "Premium"]
@@ -46,7 +48,7 @@ pub async fn edit(ctx: AppContext<'_>) -> Result<(), Error> {
         Ok(pos) => pos,
         Err(err) => {
             ctx.say("An error has occurred").await?;
-            println!("Error: {}", err);
+            let _ = log(format!("Error: {}", err));
             return Ok(());
         }
     };
@@ -67,11 +69,11 @@ pub async fn edit(ctx: AppContext<'_>) -> Result<(), Error> {
         position.contracts[last_index].open.strike = strike.parse::<f64>()?;
     }
     if let Some(exp) = data.exp {
-        let nd = NaiveDate::parse_from_str(&exp, "%Y-%m-%d")?;
+        let expiry_string = date_from_string(exp)?;
         position.contracts[last_index].open.expiry = match Utc.with_ymd_and_hms(
-            nd.year_ce().1 as i32,
-            nd.month0() + 1,
-            nd.day0() + 1,
+            expiry_string.year,
+            expiry_string.month,
+            expiry_string.day,
             20,
             0,
             0,

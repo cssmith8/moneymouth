@@ -1,4 +1,7 @@
-use crate::types::types::{Data, Error};
+use crate::{
+    types::types::{Data, Error},
+    utils::log::log,
+};
 use anyhow::Result;
 use poise::serenity_prelude as serenity;
 use serenity::model::id::ChannelId;
@@ -10,7 +13,7 @@ pub async fn awake(
     _framework: poise::FrameworkContext<'_, Data, Error>,
     data_about_bot: &serenity::Ready,
 ) -> Result<(), Error> {
-    println!("Logged in as {}", data_about_bot.user.tag());
+    let _ = log(format!("Logged in as {}", data_about_bot.user.tag()));
 
     rustical_message(
         _ctx,

@@ -2,6 +2,7 @@ use crate::types::types::{AppContext, Error};
 use crate::utils::db::{
     get_options_db_path, get_selected_position, open_options_db, position_list_replace,
 };
+use crate::utils::log::log;
 use anyhow::Result;
 
 #[poise::command(slash_command)]
@@ -19,7 +20,7 @@ pub async fn expire(ctx: AppContext<'_>) -> Result<(), Error> {
         Ok(pos) => pos,
         Err(err) => {
             ctx.say("An error has occurred").await?;
-            println!("Error: {}", err);
+            let _ = log(format!("Error: {}", err));
             return Ok(());
         }
     };

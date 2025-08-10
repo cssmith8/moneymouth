@@ -3,6 +3,7 @@ use crate::types::{contract::Contract, option::OptionClose, option::OptionOpen};
 use crate::utils::db::{
     get_options_db_path, get_selected_position, open_options_db, position_list_replace,
 };
+use crate::utils::log::log;
 use anyhow::Result;
 use chrono::prelude::*;
 use poise::Modal;
@@ -39,7 +40,7 @@ pub async fn roll(ctx: AppContext<'_>) -> Result<(), Error> {
         Ok(pos) => pos,
         Err(err) => {
             ctx.say("An error has occurred").await?;
-            println!("Error: {}", err);
+            let _ = log(format!("Error: {}", err));
             return Ok(());
         }
     };
