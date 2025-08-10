@@ -32,7 +32,7 @@ pub fn log(message: String) -> Result<(), Error> {
 
 fn send_realtime_log(message: &str) {
     let channel = ChannelId::new(1160065321013620857);
-    //let _ = channel.say(&message);
+    let _ = channel.say(&message);
 }
 
 pub fn load_all_logs() -> Result<Vec<DBLog>, Error> {
