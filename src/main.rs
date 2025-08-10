@@ -43,6 +43,7 @@ async fn main() -> Result<(), anyhow::Error> {
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
             commands: vec![
+                commands::logs::logs(),
                 commands::add::open::open(),
                 commands::add::close::close(),
                 commands::add::expire::expire(),

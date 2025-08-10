@@ -3,6 +3,25 @@ use crate::types::position::Position;
 use pickledb::{PickleDb, PickleDbDumpPolicy, SerializationMethod};
 use std::env;
 
+pub fn create_or_open_db(path: String) -> PickleDb {
+    let opendb = match PickleDb::load(
+        path.clone(),
+        PickleDbDumpPolicy::AutoDump,
+        SerializationMethod::Json,
+    ) {
+        Ok(opendb) => opendb,
+        Err(_e) => {
+            println!("Creating new db at: {}", path);
+            PickleDb::new(
+                path.clone(),
+                PickleDbDumpPolicy::AutoDump,
+                SerializationMethod::Json,
+            )
+        }
+    };
+    opendb
+}
+
 pub fn open_options_db(path: String) -> Option<PickleDb> {
     let mut new_flag = false;
     let mut opendb = match PickleDb::load(
