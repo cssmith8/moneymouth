@@ -2,10 +2,14 @@ use crate::types::dblog::DBLog;
 use crate::types::types::Error;
 use crate::utils::db::create_or_open_db;
 use chrono::Utc;
+use std::env;
 
 #[allow(dead_code)]
 pub fn log(message: String) -> Result<(), Error> {
-    let mut db = create_or_open_db("data/logs.db".to_string());
+    let mut db = create_or_open_db(format!(
+        "{}/logs.db",
+        env::var("DB_PATH").unwrap_or_else(|_| "data/".into())
+    ));
     if !db.lexists("logs") {
         db.lcreate("logs")?;
     }
