@@ -1,4 +1,4 @@
-use crate::types::dblog::DBLog;
+use crate::types::output::dblog::DBLog;
 use crate::types::types::Error;
 use crate::utils::db::create_or_open_db;
 use chrono::Utc;

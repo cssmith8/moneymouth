@@ -1,6 +1,6 @@
 use poise::serenity_prelude::CreateAttachment;
 
-use crate::types::excelline::Excelline;
+use crate::types::output::excelline::Excelline;
 use crate::types::position::Position;
 use crate::types::types::{AppContext, Error};
 use crate::utils::db::{get_options_db_path, open_options_db};
