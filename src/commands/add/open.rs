@@ -1,5 +1,6 @@
 use crate::types::types::{AppContext, Error};
 use crate::types::{contract::Contract, option::OptionOpen, position::Position};
+use crate::utils::date::date_from_string;
 use crate::utils::db::{get_options_db_path, open_options_db};
 use anyhow::Result;
 use chrono::prelude::*;
@@ -46,11 +47,11 @@ pub async fn open(
             //get modal info
             let date = Utc::now();
             let strike = data.strike.parse::<f64>()?;
-            let nd = NaiveDate::parse_from_str(&data.exp, "%Y-%m-%d")?;
+            let expiry_string = date_from_string(data.exp)?;
             let expiry = match Utc.with_ymd_and_hms(
-                nd.year_ce().1 as i32,
-                nd.month0() + 1,
-                nd.day0() + 1,
+                expiry_string.year,
+                expiry_string.month,
+                expiry_string.day,
                 20,
                 0,
                 0,
