@@ -4,7 +4,15 @@ use crate::utils::db::create_or_open_db;
 use chrono::Utc;
 use poise::serenity_prelude as serenity;
 use serenity::model::id::ChannelId;
+use serenity::Http;
 use std::env;
+use std::sync::{Arc, OnceLock};
+
+static HTTP_CLIENT: OnceLock<Arc<Http>> = OnceLock::new();
+
+pub fn set_http_client(http: Arc<Http>) {
+    let _ = HTTP_CLIENT.set(http);
+}
 
 #[allow(dead_code)]
 pub fn log(message: String) -> Result<(), Error> {
@@ -31,8 +39,13 @@ pub fn log(message: String) -> Result<(), Error> {
 }
 
 fn send_realtime_log(message: &str) {
-    let channel = ChannelId::new(1160065321013620857);
-    let _ = channel.say(&message);
+    if let Some(http) = HTTP_CLIENT.get() {
+        let channel = ChannelId::new(1160065321013620857);
+        let message = message.to_string();
+        tokio::spawn(async move {
+            let _ = channel.say(&http, &message).await;
+        });
+    }
 }
 
 pub fn load_all_logs() -> Result<Vec<DBLog>, Error> {

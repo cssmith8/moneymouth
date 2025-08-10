@@ -1,6 +1,6 @@
 //use csv::{Reader, StringRecord, Writer};
 use crate::types::types::{Data, Error};
-use crate::utils::log::log;
+use crate::utils::log::{log, set_http_client};
 use anyhow::Result;
 use poise::serenity_prelude as serenity;
 use serenity::prelude::*;
@@ -69,6 +69,7 @@ async fn main() -> Result<(), anyhow::Error> {
         })
         .setup(|ctx, _ready, framework| {
             Box::pin(async move {
+                set_http_client(ctx.http.clone());
                 poise::builtins::register_globally(ctx, &framework.options().commands).await?;
                 Ok(Data {})
             })
