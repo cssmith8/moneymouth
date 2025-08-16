@@ -33,6 +33,7 @@ struct EditModal {
     quantity: Option<String>,
 }
 
+/// Edit details of the selected options position
 #[poise::command(slash_command)]
 pub async fn edit(ctx: AppContext<'_>) -> Result<(), Error> {
     let userid = ctx.interaction.user.id;

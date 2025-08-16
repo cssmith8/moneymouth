@@ -3,6 +3,7 @@ use crate::types::{contract::Contract, position::Position};
 use crate::utils::db::{get_options_db_path, open_options_db};
 use poise::serenity_prelude::{self as serenity};
 
+/// View details of the selected options position
 #[poise::command(slash_command)]
 pub async fn details(ctx: AppContext<'_>) -> Result<(), Error> {
     let userid = ctx.interaction.user.id;

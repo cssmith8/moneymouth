@@ -14,7 +14,7 @@ pub struct SplitModal {
     quantity: String,
 }
 
-//command that splits an existing position into 2 copies, each with less quantity
+/// Split the selected options position into two positions
 #[poise::command(slash_command)]
 pub async fn split(ctx: AppContext<'_>) -> Result<(), Error> {
     let userid = ctx.interaction.user.id;

@@ -19,6 +19,7 @@ pub struct CloseModal {
     //quantity: String,
 }
 
+/// Buy to close the selected options contract
 #[poise::command(slash_command)]
 pub async fn close(ctx: AppContext<'_>) -> Result<(), Error> {
     let userid = ctx.interaction.user.id;

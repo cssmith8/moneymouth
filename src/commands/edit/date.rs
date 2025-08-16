@@ -25,6 +25,7 @@ struct DateModal {
     day: Option<String>,
 }
 
+/// Edit the start date of the selected options contract
 #[poise::command(slash_command)]
 pub async fn date(ctx: AppContext<'_>) -> Result<(), Error> {
     let userid = ctx.interaction.user.id;

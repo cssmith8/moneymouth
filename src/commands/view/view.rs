@@ -11,6 +11,7 @@ pub struct OpenPosition {
     pos: Position,
 }
 
+/// View open options contracts
 #[poise::command(slash_command)]
 pub async fn view(ctx: AppContext<'_>) -> Result<(), Error> {
     let userid = ctx.interaction.user.id;

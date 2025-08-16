@@ -4,6 +4,7 @@ use crate::utils::db::{get_options_db_path, open_options_db};
 use crate::utils::display::label_display;
 use poise::serenity_prelude::{self as serenity};
 
+/// View past and present options contracts
 #[poise::command(slash_command)]
 pub async fn all(ctx: AppContext<'_>) -> Result<(), Error> {
     let userid = ctx.interaction.user.id;

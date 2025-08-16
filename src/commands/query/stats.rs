@@ -3,6 +3,7 @@ use crate::types::types::{AppContext, Error};
 use crate::utils::db::{get_options_db_path, open_options_db};
 use poise::serenity_prelude::{self as serenity, Colour, Timestamp};
 
+/// Get all-time gain statistics for options contracts
 #[poise::command(slash_command)]
 pub async fn stats(ctx: AppContext<'_>) -> Result<(), Error> {
     let userid = ctx.interaction.user.id;

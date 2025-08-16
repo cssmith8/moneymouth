@@ -4,6 +4,7 @@ use crate::utils::db::{get_options_db_path, open_options_db};
 use poise::serenity_prelude::{self as serenity, Colour};
 use std::collections::HashMap;
 
+/// View current asset holdings
 #[poise::command(slash_command)]
 pub async fn assets(ctx: AppContext<'_>) -> Result<(), Error> {
     let userid = ctx.interaction.user.id;

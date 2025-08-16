@@ -7,6 +7,7 @@ use crate::utils::display::label_display;
 use poise::serenity_prelude::{self as serenity};
 use std::collections::HashMap;
 
+/// Get monthly statistics for options contracts
 #[poise::command(slash_command)]
 pub async fn month(ctx: AppContext<'_>) -> Result<(), Error> {
     let userid = ctx.interaction.user.id;

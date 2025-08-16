@@ -4,6 +4,7 @@ use crate::utils::db::{
 };
 use anyhow::Result;
 
+/// Mark the selected options contract as assigned
 #[poise::command(slash_command)]
 pub async fn assign(ctx: AppContext<'_>) -> Result<(), Error> {
     let userid = ctx.interaction.user.id;

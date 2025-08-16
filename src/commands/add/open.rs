@@ -30,6 +30,7 @@ pub struct OpenModal {
     quantity: String,
 }
 
+/// Open a new options contract
 #[poise::command(slash_command)]
 pub async fn open(
     ctx: AppContext<'_>,

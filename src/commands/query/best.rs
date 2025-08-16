@@ -3,6 +3,7 @@ use crate::types::types::{AppContext, Error};
 use crate::utils::db::{get_options_db_path, open_options_db};
 use chrono::Datelike;
 
+/// Get the best performing options positions
 #[poise::command(slash_command)]
 pub async fn best(ctx: AppContext<'_>) -> Result<(), Error> {
     let userid = ctx.interaction.user.id;

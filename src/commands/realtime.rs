@@ -4,6 +4,7 @@ use crate::{
 };
 use std::env;
 
+/// Enable or disable realtime logging
 #[poise::command(slash_command)]
 pub async fn realtime(
     ctx: AppContext<'_>,

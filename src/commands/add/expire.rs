@@ -5,6 +5,7 @@ use crate::utils::db::{
 use crate::utils::log::log;
 use anyhow::Result;
 
+/// Mark the selected options contract as expired
 #[poise::command(slash_command)]
 pub async fn expire(ctx: AppContext<'_>) -> Result<(), Error> {
     let userid = ctx.interaction.user.id;

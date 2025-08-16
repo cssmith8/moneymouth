@@ -26,6 +26,7 @@ pub struct RollModal {
     strike: Option<String>,
 }
 
+/// Roll the selected options contract
 #[poise::command(slash_command)]
 pub async fn roll(ctx: AppContext<'_>) -> Result<(), Error> {
     let userid = ctx.interaction.user.id;

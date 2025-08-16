@@ -4,6 +4,7 @@ use crate::types::types::{AppContext, Error};
 use crate::utils::db::{get_options_db_path, open_options_db};
 use poise::serenity_prelude::CreateAttachment;
 
+/// Export all options data to a CSV file
 #[poise::command(slash_command)]
 pub async fn export(ctx: AppContext<'_>) -> Result<(), Error> {
     let userid = ctx.interaction.user.id;
