@@ -45,6 +45,7 @@ async fn main() -> Result<(), anyhow::Error> {
         .options(poise::FrameworkOptions {
             commands: vec![
                 commands::logs::logs(),
+                commands::realtime::realtime(),
                 commands::add::open::open(),
                 commands::add::close::close(),
                 commands::add::expire::expire(),

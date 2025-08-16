@@ -2,7 +2,7 @@ use crate::types::output::dblog::DBLog;
 use crate::types::types::Error;
 use crate::utils::db::create_or_open_db;
 use chrono::Utc;
-use poise::serenity_prelude as serenity;
+use poise::serenity_prelude::{self as serenity, Http};
 use serenity::model::id::ChannelId;
 use std::env;
 
@@ -32,7 +32,8 @@ pub fn log(message: String) -> Result<(), Error> {
 
 fn send_realtime_log(message: &str) {
     let channel = ChannelId::new(1160065321013620857);
-    //let _ = channel.say(&message);
+    let http = Http::new(&env::var("DISCORD_TOKEN").expect("DISCORD_TOKEN must be set"));
+    let _ = channel.say(&http, message);
 }
 
 pub fn load_all_logs() -> Result<Vec<DBLog>, Error> {
