@@ -1,6 +1,11 @@
-use crate::types::types::{AppContext, Error};
-use crate::types::{contract::Contract, position::Position};
-use crate::utils::db::{get_options_db_path, open_options_db};
+use crate::{
+    types::{
+        contract::Contract,
+        position::Position,
+        types::{AppContext, Error},
+    },
+    utils::db::{get_options_db_path, open_options_db},
+};
 use poise::serenity_prelude::{self as serenity};
 
 /// View details of the selected options position

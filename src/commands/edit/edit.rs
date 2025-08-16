@@ -1,9 +1,11 @@
-use crate::types::types::{AppContext, Error};
-use crate::utils::date::date_from_string;
-use crate::utils::db::{
-    get_options_db_path, get_selected_position, open_options_db, position_list_replace,
+use crate::{
+    types::types::{AppContext, Error},
+    utils::{
+        date::date_from_string,
+        db::{get_options_db_path, get_selected_position, open_options_db, position_list_replace},
+        log::log,
+    },
 };
-use crate::utils::log::log;
 use chrono::prelude::*;
 //use poise::serenity_prelude::CreateQuickModal;
 use anyhow::Result;

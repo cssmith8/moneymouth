@@ -1,6 +1,7 @@
-use crate::types::output::dblog::DBLog;
-use crate::types::types::Error;
-use crate::utils::db::create_or_open_db;
+use crate::{
+    types::{output::dblog::DBLog, types::Error},
+    utils::db::create_or_open_db,
+};
 use chrono::Utc;
 use poise::serenity_prelude::{self as serenity, Http};
 use serenity::model::id::ChannelId;

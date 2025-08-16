@@ -1,7 +1,13 @@
-use crate::types::position::Position;
-use crate::types::types::{AppContext, Error};
-use crate::utils::db::{get_options_db_path, open_options_db};
-use crate::utils::display::label_display;
+use crate::{
+    types::{
+        position::Position,
+        types::{AppContext, Error},
+    },
+    utils::{
+        db::{get_options_db_path, open_options_db},
+        display::label_display,
+    },
+};
 use poise::serenity_prelude::{self as serenity, Colour};
 
 const SELECT_TEXT: &str = "**Position Selected**\n> Use `/close` to close the position\n> Use `/roll` to roll the position\n> Use `/expire` if the option expired\n> Use `/assign` if the option was assigned\n\n> Use `/edit` to edit position info\n> Use `/date` to change open date\n> Use `/split` to split the position\n\n> Use `/details` to view contract details";

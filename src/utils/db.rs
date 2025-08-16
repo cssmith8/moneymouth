@@ -1,5 +1,7 @@
-use crate::types::position::Position;
-use crate::{types::indexedposition::IndexedPosition, utils::log::log};
+use crate::{
+    types::{indexedposition::IndexedPosition, position::Position},
+    utils::log::log,
+};
 use pickledb::{PickleDb, PickleDbDumpPolicy, SerializationMethod};
 use std::env;
 

@@ -1,7 +1,11 @@
-use crate::types::output::excelline::Excelline;
-use crate::types::position::Position;
-use crate::types::types::{AppContext, Error};
-use crate::utils::db::{get_options_db_path, open_options_db};
+use crate::{
+    types::{
+        output::excelline::Excelline,
+        position::Position,
+        types::{AppContext, Error},
+    },
+    utils::db::{get_options_db_path, open_options_db},
+};
 use poise::serenity_prelude::CreateAttachment;
 
 /// Export all options data to a CSV file

@@ -1,5 +1,7 @@
-use crate::types::positionmonth::PositionMonth;
-use crate::{types::contract::Contract, utils::log::log};
+use crate::{
+    types::{contract::Contract, positionmonth::PositionMonth},
+    utils::log::log,
+};
 use chrono::{prelude::*, Datelike, Duration, NaiveDate};
 
 #[derive(serde::Serialize, serde::Deserialize)]

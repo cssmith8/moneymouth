@@ -1,6 +1,10 @@
-use crate::types::position::Position;
-use crate::types::types::{AppContext, Error};
-use crate::utils::db::{get_options_db_path, open_options_db};
+use crate::{
+    types::{
+        position::Position,
+        types::{AppContext, Error},
+    },
+    utils::db::{get_options_db_path, open_options_db},
+};
 use chrono::Datelike;
 
 /// Get the best performing options positions

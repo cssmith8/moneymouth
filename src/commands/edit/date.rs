@@ -1,8 +1,10 @@
-use crate::types::types::{AppContext, Error};
-use crate::utils::db::{
-    get_options_db_path, get_selected_position, open_options_db, position_list_replace,
+use crate::{
+    types::types::{AppContext, Error},
+    utils::{
+        db::{get_options_db_path, get_selected_position, open_options_db, position_list_replace},
+        log::log,
+    },
 };
-use crate::utils::log::log;
 use anyhow::Result;
 use chrono::prelude::*;
 use poise::Modal;

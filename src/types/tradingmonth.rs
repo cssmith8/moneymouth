@@ -1,4 +1,3 @@
-//use chrono::prelude::*;
 use crate::types::positionmonth::PositionMonth;
 
 #[derive(serde::Serialize, serde::Deserialize)]
@@ -6,11 +5,10 @@ pub struct TradingMonth {
     pub year: i32,
     pub month: u32,
     pub gain: f64,
-    pub investment: f64
+    pub investment: f64,
 }
 
 impl TradingMonth {
-
     pub fn id(&self) -> String {
         format!("{}-{:02}", self.year, self.month)
     }
@@ -30,7 +28,12 @@ impl TradingMonth {
         let month_name = chrono::NaiveDate::from_ymd_opt(year, month, 1)
             .map(|d| d.format("%B").to_string())
             .unwrap_or_else(|| "Unknown".to_string());
-        return format!("{} {}: `{:.2}%`", month_name, year, self.daily_return_rate());
+        return format!(
+            "{} {}: `{:.2}%`",
+            month_name,
+            year,
+            self.daily_return_rate()
+        );
     }
 
     pub fn display_distributed_gain(&self) -> String {

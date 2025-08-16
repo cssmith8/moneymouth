@@ -1,7 +1,15 @@
-use crate::types::types::{AppContext, Error};
-use crate::types::{contract::Contract, option::OptionOpen, position::Position};
-use crate::utils::date::date_from_string;
-use crate::utils::db::{get_options_db_path, open_options_db};
+use crate::{
+    types::{
+        contract::Contract,
+        option::OptionOpen,
+        position::Position,
+        types::{AppContext, Error},
+    },
+    utils::{
+        date::date_from_string,
+        db::{get_options_db_path, open_options_db},
+    },
+};
 use anyhow::Result;
 use chrono::prelude::*;
 use poise::Modal;

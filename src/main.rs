@@ -1,6 +1,7 @@
-//use csv::{Reader, StringRecord, Writer};
-use crate::types::types::{Data, Error};
-use crate::utils::log::log;
+use crate::{
+    types::types::{Data, Error},
+    utils::log::log,
+};
 use anyhow::Result;
 use poise::serenity_prelude as serenity;
 use serenity::prelude::*;
